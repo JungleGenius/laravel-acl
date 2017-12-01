@@ -89,7 +89,11 @@ trait HasPermission
             $permissionId = $this->parsePermissionId($permission);
 
             if ( ! $this->permissions->keyBy('id')->has($permissionId) ) {
-                $this->permissions()->attach($permissionId);
+                if ((strlen((string) $permissionId) == 36) && (substr_count((string) $permissionId, '-') == 4)) {
+                    $this->permissions()->attach($permissionId, ['id' => (string) \Webpatser\Uuid\Uuid::generate()]);
+                }else{
+                    $this->permissions()->attach($permissionId);
+                }
 
                 return $permission;
             }

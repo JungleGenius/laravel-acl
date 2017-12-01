@@ -92,7 +92,11 @@ trait HasRole
             $roleId = $this->parseRoleId($role);
 
             if ( ! $this->roles->keyBy('id')->has($roleId) ) {
-                $this->roles()->attach($roleId);
+                if ((strlen((string) $roleId) == 36) && (substr_count((string) $roleId, '-') == 4)) {
+                    $this->roles()->attach($roleId, ['id' => (string) \Webpatser\Uuid\Uuid::generate()]);
+                }else{
+                    $this->roles()->attach($roleId);
+                }
 
                 return $role;
             }
