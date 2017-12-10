@@ -129,7 +129,13 @@ trait HasPermission
         $sync = [];
         $this->mapArray($permissions, function ($permission) use (&$sync) {
 
-            $sync[] = $this->parsePermissionId($permission);
+            $permissionId = $this->parsePermissionId($permission);
+
+            if ((strlen((string) $permissionId) == 36) && (substr_count((string) $permissionId, '-') == 4)) {
+                $sync[$permissionId] = ['id' => (string) \Webpatser\Uuid\Uuid::generate()];
+            }else{
+                $sync[] = $permissionId;
+            }
 
             return $sync;
         });

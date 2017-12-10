@@ -132,7 +132,13 @@ trait HasRole
         $sync = [];
         $this->mapArray($roles, function ($role) use (&$sync) {
 
-            $sync[] = $this->parseRoleId($role);
+            $roleId = $this->parseRoleId($role);
+
+            if ((strlen((string) $roleId) == 36) && (substr_count((string) $roleId, '-') == 4)) {
+                $sync[$roleId] = ['id' => (string) \Webpatser\Uuid\Uuid::generate()];
+            }else{
+                $sync[] = $roleId;
+            }
 
             return $sync;
         });
